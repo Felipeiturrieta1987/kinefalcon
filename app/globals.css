@@ -1,0 +1,111 @@
+@import "tailwindcss";
+
+@theme {
+  /* Brand palette, sampled from the KineFalcon logo and social material:
+     midnight blue base, cyan/teal primary, violet secondary. */
+  --color-navy-50: #eef4fc;
+  --color-navy-100: #d8e5f7;
+  --color-navy-200: #b2c9ed;
+  --color-navy-300: #7fa3dd;
+  --color-navy-400: #4a74c2;
+  --color-navy-500: #2a4f9e;
+  --color-navy-600: #1b3a7d;
+  --color-navy-700: #132c61;
+  --color-navy-800: #0d1f47;
+  --color-navy-900: #0a1733;
+  --color-navy-950: #050d1f;
+
+  --color-aqua-50: #eafbfd;
+  --color-aqua-100: #cbf4fa;
+  --color-aqua-200: #9ae9f4;
+  --color-aqua-300: #5fdcea;
+  --color-aqua-400: #2ec7da;
+  --color-aqua-500: #16bbd1;
+  --color-aqua-600: #0d92a8;
+  --color-aqua-700: #0f7487;
+  --color-aqua-800: #135e6e;
+  --color-aqua-900: #144e5c;
+
+  --color-violet-brand-50: #f8f0fb;
+  --color-violet-brand-100: #f0def6;
+  --color-violet-brand-200: #e2bdee;
+  --color-violet-brand-300: #cd92e0;
+  --color-violet-brand-400: #b06ecb;
+  --color-violet-brand-500: #8e3fa0;
+  --color-violet-brand-600: #763486;
+  --color-violet-brand-700: #612b6d;
+  --color-violet-brand-800: #4f2559;
+  --color-violet-brand-900: #42214a;
+
+  --font-display: "Sora", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+/* These must live in @layer base: unlayered rules outrank Tailwind's layered
+   utilities, so a bare `a { color: inherit }` would defeat every text-* class. */
+@layer base {
+  :root {
+    color-scheme: light;
+    scroll-behavior: smooth;
+    /* The sticky header is 72px tall; keep anchor targets clear of it. */
+    scroll-padding-top: 5.5rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :root {
+      scroll-behavior: auto;
+    }
+  }
+
+  body {
+    margin: 0;
+    background: #ffffff;
+    color: var(--color-navy-900);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+/* Decorative aurora used behind dark sections. */
+.bg-aurora {
+  background-image:
+    radial-gradient(60rem 40rem at 12% -10%, rgba(22, 187, 209, 0.28), transparent 60%),
+    radial-gradient(45rem 35rem at 92% 8%, rgba(142, 63, 160, 0.28), transparent 62%),
+    radial-gradient(50rem 40rem at 50% 115%, rgba(42, 79, 158, 0.35), transparent 65%);
+}
+
+/* Faint grid, echoes the clinical/technical tone of the brand's material. */
+.bg-grid {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 3.5rem 3.5rem;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.animate-rise {
+  animation: rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-rise {
+    animation: none;
+  }
+}
+
+/* Keyboard focus that stays visible on both light and dark sections. */
+:focus-visible {
+  outline: 2px solid var(--color-aqua-400);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
