@@ -1,8 +1,10 @@
 # KineFalcon — sitio web
 
 Sitio del centro kinésico **KineFalcon** (San Miguel, Santiago), construido con
-[vinext](https://github.com/cloudflare/vinext) (Next.js App Router sobre Vite) y desplegable en
+[vinext](https://github.com/cloudflare/vinext) (Next.js App Router sobre Vite) y desplegado en
 **Cloudflare Workers**.
+
+🌐 **En línea:** <https://kinefalcon.fiturrieta87.workers.dev>
 
 - **Diseño:** paleta tomada del logo y del material gráfico del centro (azul noche, cian y violeta).
 - **Conversión:** WhatsApp con mensaje prellenado según el servicio + formulario de contacto.
@@ -62,16 +64,28 @@ apunta a Workers y exige el plugin, por lo que `NO_CF=1 vite build` tampoco sirv
 
 ## Deploy
 
-### Opción recomendada: Cloudflare Workers Builds
+### Configuración actual: Cloudflare Workers Builds
 
-Compila y despliega en la infraestructura de Cloudflare (Linux), evitando la limitación local:
+El repo está conectado a Workers Builds, que compila en Linux y evita la limitación local.
+**Cada push a `main` despliega automáticamente.**
 
-1. Sube el repositorio a GitHub.
-2. En el panel de Cloudflare: **Workers & Pages → Create → Workers → Connect to Git**.
-3. Build command `pnpm build`, deploy command `pnpm deploy`.
-4. Carga las variables y secretos del formulario (abajo).
+| Ajuste                   | Valor            |
+| ------------------------ | ---------------- |
+| Worker name              | `kinefalcon`     |
+| Comando de compilación   | `pnpm run build` |
+| Comando de implementación| `pnpm run deploy`|
+| Directorio raíz          | `/`              |
+| Rama de producción       | `main`           |
 
-Cada push al branch principal queda desplegado automáticamente.
+⚠️ **Dos detalles que hacen fallar el deploy:**
+
+1. **`pnpm run deploy`, no `pnpm deploy`.** `deploy` es un subcomando propio de pnpm, así que sin
+   `run` nunca se ejecuta el script del proyecto.
+2. **Dejar el comando por defecto tampoco sirve.** Workers Builds usa `npx wrangler deploy`, pero
+   este proyecto se compila con el CLI `cf` y wrangler aborta con
+   *"Please run `cf deploy` instead"*. El script `deploy` ya resuelve esto.
+
+El Worker en el panel debe llamarse igual que el `name` de `cloudflare.config.ts` (`kinefalcon`).
 
 ### Opción manual
 
@@ -110,14 +124,19 @@ mensaje, y escape de HTML antes de armar el correo.
 
 ## Estado y pendientes
 
-- [x] 14 rutas, todas respondiendo 200 (404 propio incluido)
+- [x] 14 rutas, todas respondiendo 200 en producción (404 propio incluido)
 - [x] Sin desbordes horizontales a 390 px en ninguna página
 - [x] Contraste AA verificado en los textos del sitio
 - [x] `tsc --noEmit` sin errores
-- [ ] **Build de producción sin verificar** — bloqueado por la versión de macOS de este equipo
+- [x] Build de producción verificado en Workers Builds y desplegado
 - [ ] Reemplazar las imágenes de Instagram por fotografías propias en alta resolución
+      (el logo actual son 150×150; conviene pedir el vectorial)
 - [ ] Confirmar el correo de contacto (`contacto@kinefalcon.cl` es un supuesto) y configurar Resend
-- [ ] Apuntar el dominio `kinefalcon.cl`
+- [ ] Apuntar el dominio `kinefalcon.cl` y actualizar `site.url`
+- [ ] Decidir si el sitio en `workers.dev` debe llevar `noindex` mientras no exista el dominio
+      (hoy `site.url` apunta a `kinefalcon.cl`, que aún no resuelve)
+- [ ] Servir las rutas pre-renderizadas desde el Static Assets cache (hoy se renderizan en cada
+      request: funciona, pero más lento de lo necesario)
 - [ ] Confirmar textos, horarios y convenios con el centro antes de publicar
 
 ## Datos usados
